@@ -33,7 +33,7 @@
 
         .calendar-nav {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 20px;
         }
@@ -126,7 +126,7 @@
         
         <div class="calendar-nav">
             <button id="prevMonthBtn">Previous</button>
-            <span class="month-year" id="monthYearDisplay"></span>
+            <span class="month-year" id="monthYearDisplay">December 2024</span>
             <button id="nextMonthBtn">Next</button>
         </div>
 
@@ -140,27 +140,26 @@
         <div class="answer-result" id="answerResult"></div>
 
         <div class="footer">
-            <p>Pick the 28th day to answer the question!</p>
+            <p>Pick the 28th of December 2024 to answer the question!</p>
         </div>
     </div>
 
     <script>
-        let currentMonth = new Date().getMonth(); // 0-11 (0 = January)
-        let currentYear = new Date().getFullYear();
+        let currentMonth = 11; // December (0-11) 11 = December
+        let currentYear = 2024;
         let selectedDay = null;
 
-        // Function to generate the calendar
+        // Function to generate the calendar for December 2024
         function generateCalendar() {
             const calendar = document.getElementById("calendar");
             const monthYearDisplay = document.getElementById("monthYearDisplay");
 
-            // Get the first day of the month and total days in the month
+            // December 2024, first day is a Sunday
             const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
             // Update the month-year display
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            monthYearDisplay.textContent = `December ${currentYear}`;
 
             // Clear any existing calendar
             calendar.innerHTML = '';
@@ -215,7 +214,7 @@
             }
         }
 
-        // Navigate to the previous month
+        // Navigate to the previous month (this will be used only to go to November 2024)
         document.getElementById("prevMonthBtn").addEventListener("click", () => {
             currentMonth--;
             if (currentMonth < 0) {
@@ -225,7 +224,7 @@
             generateCalendar();
         });
 
-        // Navigate to the next month
+        // Navigate to the next month (this will be used only to go to January 2025)
         document.getElementById("nextMonthBtn").addEventListener("click", () => {
             currentMonth++;
             if (currentMonth > 11) {
@@ -235,7 +234,7 @@
             generateCalendar();
         });
 
-        // Initial call to generate the calendar
+        // Initial call to generate the calendar for December 2024
         generateCalendar();
     </script>
 </body>
