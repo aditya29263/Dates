@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Now?</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-gap: 10px;
+            justify-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar .day {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            cursor: not-allowed;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .calendar .day:hover {
+            background-color: #ff69b4;
+            color: white;
+        }
+
+        .calendar .selected {
+            background-color: #ff69b4;
+            color: white;
+            cursor: pointer;
+        }
+
+        .answer-buttons {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .answer-buttons button {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            margin: 10px;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .answer-buttons button:hover {
+            background-color: #ff1493;
+        }
+
+        .answer-result {
+            margin-top: 20px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 1.2em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Will You Now?</h1>
+        <div class="calendar" id="calendar"></div>
+
+        <div class="answer-buttons" id="answerButtons">
+            <button id="yesButton">Yes</button>
+            <button id="noButton">No</button>
+        </div>
+
+        <div class="answer-result" id="answerResult"></div>
+
+        <div class="footer">
+            <p>Pick the 28th day to answer the question!</p>
+        </div>
+    </div>
+
+    <script>
+        // Generate calendar for current month
+        function generateCalendar() {
+            const calendar = document.getElementById("calendar");
+            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay();
+
+            // Clear any existing calendar
+            calendar.innerHTML = '';
+
+            // Add empty spaces for days before the first day of the month
+            for (let i = 0; i < firstDayOfMonth; i++) {
+                const emptyCell = document.createElement("div");
+                emptyCell.classList.add("day");
+                calendar.appendChild(emptyCell);
+            }
+
+            // Create the calendar days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement("div");
+                dayCell.classList.add("day");
+                dayCell.textContent = day;
+
+                // Only make the 28th clickable
+                if (day === 28) {
+                    dayCell.classList.add("selected");
+                    dayCell.onclick = () => handleDayClick(day);
+                }
+
+                calendar.appendChild(dayCell);
+            }
+        }
+
+        let selectedDay = null;
+
+        function handleDayClick(day) {
+            if (day !== 28) {
+                return;
+            }
+
+            selectedDay = day;
+            document.getElementById("answerButtons").style.display = "block";
+
+            // Display fixed time of 8:00 AM when the day is clicked
+            const fixedTime = "8:00 AM";
+            document.getElementById("answerResult").textContent = `You selected the 28th! Time: ${fixedTime}`;
+        }
+
+        document.getElementById("yesButton").addEventListener("click", () => handleAnswer("Yes"));
+        document.getElementById("noButton").addEventListener("click", () => handleAnswer("No"));
+
+        function handleAnswer(answer) {
+            const answerResult = document.getElementById("answerResult");
+            if (answer === "Yes") {
+                answerResult.textContent = `You chose "Yes" for the 28th! The moment is here!`;
+                document.getElementById("answerButtons").style.display = "none";
+                selectedDay = null;
+            } else {
+                answerResult.textContent = `You accidentally selected the wrong option. Try again!`;
+                // Make the 28th clickable again
+                generateCalendar();
+            }
+        }
+
+        // Initial call to generate the calendar
+        generateCalendar();
+    </script>
+</body>
+</html>
