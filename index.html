@@ -35,7 +35,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px; /* Increased space */
         }
 
         .calendar-nav button {
@@ -46,6 +46,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 0 10px; /* Add space between buttons */
         }
 
         .calendar-nav button:hover {
@@ -62,7 +63,7 @@
             grid-template-columns: repeat(7, 1fr);
             grid-gap: 10px;
             justify-items: center;
-            margin-bottom: 20px;
+            margin-top: 10px;
         }
 
         .calendar .day {
@@ -74,6 +75,9 @@
             cursor: not-allowed;
             font-weight: bold;
             transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .calendar .day:hover {
@@ -140,7 +144,7 @@
         <div class="answer-result" id="answerResult"></div>
 
         <div class="footer">
-            <p>Pick the 28th of December 2024 to answer the question!</p>
+            <p>Will you be my date on the day and time</p>
         </div>
     </div>
 
@@ -149,20 +153,30 @@
         let currentYear = 2024;
         let selectedDay = null;
 
-        // Function to generate the calendar for December 2024
+        // Function to generate the calendar for the selected month and year
         function generateCalendar() {
             const calendar = document.getElementById("calendar");
             const monthYearDisplay = document.getElementById("monthYearDisplay");
 
-            // December 2024, first day is a Sunday
+            // Get first day of the selected month and year
             const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
             // Update the month-year display
-            monthYearDisplay.textContent = `December ${currentYear}`;
+            monthYearDisplay.textContent = `${new Date(currentYear, currentMonth).toLocaleString('default', { month: 'long' })} ${currentYear}`;
 
             // Clear any existing calendar
             calendar.innerHTML = '';
+
+            // Add the weekday names
+            const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            weekdays.forEach(day => {
+                const dayCell = document.createElement("div");
+                dayCell.classList.add("day");
+                dayCell.textContent = day;
+                dayCell.style.fontWeight = 'bold';
+                calendar.appendChild(dayCell);
+            });
 
             // Add empty cells for the days before the first day of the month
             for (let i = 0; i < firstDayOfMonth; i++) {
@@ -178,7 +192,7 @@
                 dayCell.textContent = day;
 
                 // Only make the 28th clickable
-                if (day === 28) {
+                if (day === 28 && currentMonth === 11 && currentYear === 2024) {
                     dayCell.classList.add("selected");
                     dayCell.onclick = () => handleDayClick(day);
                 }
@@ -195,7 +209,7 @@
 
             selectedDay = day;
             document.getElementById("answerButtons").style.display = "block";
-            document.getElementById("answerResult").textContent = `You selected the 28th! Time: 8:00 AM`;
+            document.getElementById("answerResult").textContent = `Meet me at the school 8:00 Am then`;
         }
 
         // Handle answer selection (Yes or No)
@@ -205,16 +219,16 @@
         function handleAnswer(answer) {
             const answerResult = document.getElementById("answerResult");
             if (answer === "Yes") {
-                answerResult.textContent = `You chose "Yes" for the 28th! The moment is here!`;
+                answerResult.textContent = `I Knew Youd say that Baby`;
                 document.getElementById("answerButtons").style.display = "none";
                 selectedDay = null;
             } else {
-                answerResult.textContent = `You accidentally selected the wrong option. Try again!`;
+                answerResult.textContent = `You accidentally selected the wrong option do it again`;
                 generateCalendar(); // Regenerate the calendar so the 28th is clickable again
             }
         }
 
-        // Navigate to the previous month (this will be used only to go to November 2024)
+        // Navigate to the previous month
         document.getElementById("prevMonthBtn").addEventListener("click", () => {
             currentMonth--;
             if (currentMonth < 0) {
@@ -224,7 +238,7 @@
             generateCalendar();
         });
 
-        // Navigate to the next month (this will be used only to go to January 2025)
+        // Navigate to the next month
         document.getElementById("nextMonthBtn").addEventListener("click", () => {
             currentMonth++;
             if (currentMonth > 11) {
