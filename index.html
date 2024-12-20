@@ -31,6 +31,32 @@
             margin-bottom: 20px;
         }
 
+        .calendar-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calendar-nav button {
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calendar-nav button:hover {
+            background-color: #ff1493;
+        }
+
+        .month-year {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -97,6 +123,13 @@
 <body>
     <div class="container">
         <h1>Will You Now?</h1>
+        
+        <div class="calendar-nav">
+            <button id="prevMonthBtn">Previous</button>
+            <span class="month-year" id="monthYearDisplay"></span>
+            <button id="nextMonthBtn">Next</button>
+        </div>
+
         <div class="calendar" id="calendar"></div>
 
         <div class="answer-buttons" id="answerButtons">
@@ -112,16 +145,27 @@
     </div>
 
     <script>
-        // Generate calendar for current month
+        let currentMonth = new Date().getMonth(); // 0-11 (0 = January)
+        let currentYear = new Date().getFullYear();
+        let selectedDay = null;
+
+        // Function to generate the calendar
         function generateCalendar() {
             const calendar = document.getElementById("calendar");
-            const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-            const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1).getDay();
+            const monthYearDisplay = document.getElementById("monthYearDisplay");
+
+            // Get the first day of the month and total days in the month
+            const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Update the month-year display
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
             // Clear any existing calendar
             calendar.innerHTML = '';
 
-            // Add empty spaces for days before the first day of the month
+            // Add empty cells for the days before the first day of the month
             for (let i = 0; i < firstDayOfMonth; i++) {
                 const emptyCell = document.createElement("div");
                 emptyCell.classList.add("day");
@@ -144,8 +188,7 @@
             }
         }
 
-        let selectedDay = null;
-
+        // Handle the day click logic
         function handleDayClick(day) {
             if (day !== 28) {
                 return;
@@ -153,12 +196,10 @@
 
             selectedDay = day;
             document.getElementById("answerButtons").style.display = "block";
-
-            // Display fixed time of 8:00 AM when the day is clicked
-            const fixedTime = "8:00 AM";
-            document.getElementById("answerResult").textContent = `You selected the 28th! Time: ${fixedTime}`;
+            document.getElementById("answerResult").textContent = `You selected the 28th! Time: 8:00 AM`;
         }
 
+        // Handle answer selection (Yes or No)
         document.getElementById("yesButton").addEventListener("click", () => handleAnswer("Yes"));
         document.getElementById("noButton").addEventListener("click", () => handleAnswer("No"));
 
@@ -170,10 +211,29 @@
                 selectedDay = null;
             } else {
                 answerResult.textContent = `You accidentally selected the wrong option. Try again!`;
-                // Make the 28th clickable again
-                generateCalendar();
+                generateCalendar(); // Regenerate the calendar so the 28th is clickable again
             }
         }
+
+        // Navigate to the previous month
+        document.getElementById("prevMonthBtn").addEventListener("click", () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar();
+        });
+
+        // Navigate to the next month
+        document.getElementById("nextMonthBtn").addEventListener("click", () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        });
 
         // Initial call to generate the calendar
         generateCalendar();
